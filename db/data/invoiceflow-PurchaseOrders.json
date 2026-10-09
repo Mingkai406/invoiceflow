@@ -1,0 +1,42 @@
+[
+  {
+    "ID": "10000000-0000-4000-8000-000000000001",
+    "number": "PO-4102",
+    "supplier": "ACME",
+    "supplierName": "Acme Components",
+    "currency": "USD",
+    "revision": 0
+  },
+  {
+    "ID": "10000000-0000-4000-8000-000000000002",
+    "number": "PO-4103",
+    "supplier": "NORTH",
+    "supplierName": "Northline Packaging",
+    "currency": "USD",
+    "revision": 0
+  },
+  {
+    "ID": "10000000-0000-4000-8000-000000000003",
+    "number": "PO-4104",
+    "supplier": "FIELD",
+    "supplierName": "Fieldstone Supply",
+    "currency": "USD",
+    "revision": 0
+  },
+  {
+    "ID": "10000000-0000-4000-8000-000000000004",
+    "number": "PO-4105",
+    "supplier": "MESA",
+    "supplierName": "Mesa Industrial",
+    "currency": "USD",
+    "revision": 0
+  },
+  {
+    "ID": "10000000-0000-4000-8000-000000000005",
+    "number": "PO-4106",
+    "supplier": "CEDAR",
+    "supplierName": "Cedar Office",
+    "currency": "USD",
+    "revision": 0
+  }
+]

@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      name="description"
+      content="InvoiceFlow: compare supplier invoices with purchase orders and goods receipts, then review the exceptions."
+    />
+    <title>InvoiceFlow · Invoice review</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="app.js" type="module"></script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to invoice review</a>
+    <aside class="rail" aria-label="Workspace">
+      <a class="brand" href="/" aria-label="InvoiceFlow home"
+        ><span class="brand-mark" aria-hidden="true">if</span
+        ><span>InvoiceFlow<span class="brand-sub">ACCOUNTS PAYABLE</span></span></a
+      >
+      <div class="workspace-label">WORKSPACE</div>
+      <div class="nav-current">
+        <span aria-hidden="true">▤</span> Invoice review <span id="nav-count">0</span>
+      </div>
+      <div class="rail-note">
+        <span class="small-rule"></span><strong>Every exception,<br />a clear next step.</strong>
+        <p>Compare the documents.<br />Record the decision.</p>
+      </div>
+      <div class="rail-bottom">
+        <span class="dot"></span> Sample company<br /><span>Synthetic purchasing records</span>
+      </div>
+    </aside>
+    <div class="shell">
+      <header class="topbar" data-role="nav" data-height-px="66" data-single-line="true">
+        <span>Purchasing <span class="slash">/</span> Accounts payable</span
+        ><label id="role-wrap" hidden
+          >Viewing as
+          <select id="role" aria-label="Demo role">
+            <option value="reviewer">Reviewer</option>
+            <option value="clerk">AP clerk</option>
+            <option value="auditor">Auditor</option>
+          </select></label
+        >
+      </header>
+      <main id="main">
+        <div class="page-heading">
+          <div>
+            <div class="eyebrow">DOCUMENT CONTROL</div>
+            <h1>Invoice review</h1>
+            <p>Resolve the differences before they become payments.</p>
+          </div>
+          <button class="primary" id="new-invoice">
+            <span aria-hidden="true">＋</span> New invoice
+          </button>
+        </div>
+        <div id="demo-note" class="demo-note" hidden>
+          Local demo · Role switching uses test accounts. Records reset when the server restarts.
+        </div>
+        <div id="notice" role="status" aria-live="polite"></div>
+        <section class="metrics" aria-label="Invoice summary">
+          <div>
+            <span>Needs attention</span><strong id="metric-exceptions">0</strong
+            ><small>Matching exceptions</small>
+          </div>
+          <div>
+            <span>Ready for review</span><strong id="metric-matched">0</strong
+            ><small>All documents agree</small>
+          </div>
+          <div>
+            <span>Reviewed</span><strong id="metric-reviewed">0</strong
+            ><small>Approved or rejected</small>
+          </div>
+          <div class="metric-note">
+            <span class="check-mark" aria-hidden="true">✓</span>
+            <p>Three documents.<br /><strong>One accountable decision.</strong></p>
+          </div>
+        </section>
+        <div class="workbench">
+          <section class="queue" aria-label="Invoice queue">
+            <div class="queue-header">
+              <h2>Review queue</h2>
+              <button id="refresh" class="text-button">Refresh</button>
+            </div>
+            <div class="filters" role="group" aria-label="Filter invoices">
+              <button data-filter="open" class="active" aria-pressed="true">
+                Open <span id="open-count">0</span></button
+              ><button data-filter="all" aria-pressed="false">All invoices</button
+              ><button data-filter="reviewed" aria-pressed="false">Reviewed</button>
+            </div>
+            <label class="search"
+              ><span aria-hidden="true">⌕</span
+              ><input
+                id="search"
+                type="search"
+                placeholder="Find supplier or invoice"
+                aria-label="Find supplier or invoice"
+            /></label>
+            <div id="invoice-list" class="invoice-list"><p class="empty">Loading invoices…</p></div>
+            <div class="queue-footer">
+              <span id="list-count">Connecting to workspace</span><span>Newest first</span>
+            </div>
+          </section>
+          <section class="detail" id="detail" aria-label="Selected invoice">
+            <div class="detail-empty">
+              <span class="document-symbol" aria-hidden="true">▤</span>
+              <h2>Select an invoice</h2>
+              <p>Compare the purchase order, receipt and invoice here.</p>
+            </div>
+          </section>
+        </div>
+        <footer class="page-footer">
+          <span>InvoiceFlow <span class="footer-dot">·</span> Purchase-to-pay workbench</span
+          ><span>Amounts exclude tax and freight. No payments are executed.</span>
+        </footer>
+      </main>
+    </div>
+    <dialog id="new-dialog" aria-labelledby="dialog-title">
+      <form id="invoice-form">
+        <div class="dialog-heading">
+          <div>
+            <span class="eyebrow">QUICK ENTRY · ONE LINE</span>
+            <h2 id="dialog-title">Add an invoice</h2>
+          </div>
+          <button
+            class="icon-button"
+            type="button"
+            id="close-dialog"
+            aria-label="Close invoice form"
+          >
+            ×
+          </button>
+        </div>
+        <p class="form-intro">
+          Choose a purchase order. The service checks the invoice against its order and receipts.
+        </p>
+        <label>Purchase order<select id="order" required></select></label>
+        <label>Order item<select id="order-item" required></select></label>
+        <div class="form-grid">
+          <label
+            >Invoice number<input
+              id="invoice-number"
+              required
+              maxlength="40"
+              placeholder="INV-1049" /></label
+          ><label
+            >Currency<input
+              id="currency"
+              required
+              maxlength="3"
+              pattern="USD|EUR|GBP"
+              title="USD, EUR or GBP"
+              value="USD"
+          /></label>
+        </div>
+        <div class="form-grid">
+          <label
+            >Quantity<input
+              id="quantity"
+              required
+              type="number"
+              min="1"
+              max="100000"
+              step="1" /></label
+          ><label
+            >Unit price<input
+              id="unit-price"
+              required
+              inputmode="decimal"
+              pattern="[0-9]{1,10}(\.[0-9]{1,2})?"
+              placeholder="0.00"
+          /></label>
+        </div>
+        <div id="form-error" class="error" role="alert"></div>
+        <div class="dialog-actions">
+          <button type="button" class="secondary" id="cancel-dialog">Cancel</button
+          ><button type="submit" class="primary" id="submit-invoice">Submit & check</button>
+        </div>
+      </form>
+    </dialog>
+  </body>
+</html>

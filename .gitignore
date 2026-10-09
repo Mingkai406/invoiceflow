@@ -1,0 +1,14 @@
+node_modules/
+gen/
+*.db
+*.db-*
+*.sqlite*
+.env*
+!.env.example
+.cdsrc-private.json
+default-env.json
+mta_archives/
+qa-local/
+.DS_Store
+test-results/
+playwright-report/

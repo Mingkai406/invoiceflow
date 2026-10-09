@@ -1,0 +1,78 @@
+{
+  "name": "invoiceflow",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Purchase order, receipt and invoice matching with an exception review workbench.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "cds-serve",
+    "dev": "node --watch node_modules/@sap/cds/bin/serve.js",
+    "test": "node --test --test-concurrency=1 test/*.test.js",
+    "demo": "node scripts/demo.js",
+    "check:model": "node scripts/check-model.js",
+    "test:ui": "playwright test",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "dependencies": {
+    "@sap/cds": "10.1.1",
+    "@cap-js/sqlite": "3.1.1",
+    "express": "^4.21.2"
+  },
+  "cds": {
+    "requires": {
+      "db": {
+        "kind": "sqlite",
+        "credentials": {
+          "url": ":memory:"
+        }
+      },
+      "auth": {
+        "[development]": {
+          "kind": "mocked",
+          "users": {
+            "clerk": {
+              "password": "local-demo",
+              "roles": [
+                "Clerk",
+                "Viewer"
+              ]
+            },
+            "reviewer": {
+              "password": "local-demo",
+              "roles": [
+                "Approver",
+                "Viewer"
+              ]
+            },
+            "auditor": {
+              "password": "local-demo",
+              "roles": [
+                "Viewer"
+              ]
+            },
+            "dual": {
+              "password": "local-demo",
+              "roles": [
+                "Clerk",
+                "Approver",
+                "Viewer"
+              ]
+            },
+            "*": false
+          }
+        },
+        "[production]": {
+          "kind": "jwt"
+        }
+      }
+    }
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.0",
+    "prettier": "3.9.9"
+  }
+}

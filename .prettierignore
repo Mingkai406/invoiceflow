@@ -1,0 +1,7 @@
+package-lock.json
+*.cds
+docs/images/
+qa-local/
+node_modules/
+test-results/
+playwright-report/
